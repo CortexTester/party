@@ -5,6 +5,8 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm") version "1.5.20"
     kotlin("plugin.spring") version "1.5.20"
+    kotlin("plugin.jpa") version "1.5.20"
+    kotlin("plugin.allopen") version "1.5.20"
 }
 
 group = "com.cbx"
@@ -15,17 +17,29 @@ repositories {
     mavenCentral()
 }
 
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.Embeddable")
+    annotation("javax.persistence.MappedSuperclass")
+}
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.8")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8")
 
     implementation("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-webapp:7.15.0")
     implementation("org.camunda.bpm.springboot:camunda-bpm-spring-boot-starter-rest:7.15.0")
     implementation("org.springframework.boot:spring-boot-starter-jdbc:2.4.4")
     implementation("org.camunda.spin:camunda-spin-dataformat-all:1.10.1")
     implementation("org.camunda.bpm:camunda-engine-plugin-spin:7.15.0")
+
+    implementation(files("libs/ubl-1.0-SNAPSHOT.jar"))
 
     runtimeOnly("org.postgresql:postgresql")
 
