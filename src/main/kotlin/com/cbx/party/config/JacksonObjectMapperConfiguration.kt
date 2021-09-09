@@ -3,6 +3,8 @@ package com.cbx.party.config
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -14,30 +16,16 @@ import org.springframework.context.annotation.Primary
 
 @Configuration
 class JacksonObjectMapperConfiguration {
-    companion object {
-        private const val dateFormat = "yyyy-MM-dd"
-        private const val dateTimeFormat = "yyyy-MM-dd HH:mm:ss"
-    }
-
-//    @Bean fun jackson2ObjectMapperBuilderCustomizer(): Jackson2ObjectMapperBuilderCustomizer {
-//        return Jackson2ObjectMapperBuilderCustomizer {
-//                builder -> builder.simpleDateFormat(dateFormat)
-//            builder.serializers(LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)))
-//            builder.serializers(LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)))
-//            builder.deserializers(LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormat)))
-//            builder.deserializers(LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateTimeFormat)))
-//        }
-//    }
-
     @Bean
     @Primary
     fun objectMapper(): ObjectMapper =
         ObjectMapper()
             .registerModule(KotlinModule())
-            .registerModule(JavaTimeModule().addDeserializer(
-                LocalDateTime::class.java, LocalDateTimeDeserializer(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-            ))
+            .registerModule(JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE)
+            .enable(SerializationFeature.WRITE_DATES_WITH_ZONE_ID)
+            .setDateFormat(StdDateFormat().withColonInTimeZone(true))
             .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
 }

@@ -39,6 +39,8 @@ dependencies {
     implementation("org.camunda.spin:camunda-spin-dataformat-all:1.10.1")
     implementation("org.camunda.bpm:camunda-engine-plugin-spin:7.15.0")
 
+    implementation("com.squareup.okhttp3:okhttp:4.4.0")
+
     implementation(files("libs/ubl-1.0-SNAPSHOT.jar"))
 
     runtimeOnly("org.postgresql:postgresql")
